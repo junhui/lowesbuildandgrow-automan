@@ -15,10 +15,40 @@ var driver = new webdriver.Builder()
   .withCapabilities(webdriver.Capabilities.firefox())
   .build();
 
+function takeIt(zipcode) {
+  driver.findElement(webdriver.By.css('.form-style2')).sendKeys(zipcode, webdriver.Key.ENTER).then(function() {
+    return driver.findElement(webdriver.By.css('#storeList li'));
+  }).then(function(el) {
+    return el.getText();
+  }).then(function(text) {
+    if (text.indexOf('Available') > 0) {
+      return driver.findElement(webdriver.By.css('#storeList li a')).then(function(el) {
+        return el.click();
+      }).then(function() {
+        return driver.findElement(webdriver.By.css('#mainContent_kidsList_selectMarker_0')).then(function(el) {
+          return el.click();
+        }).then(function() {
+          return driver.findElement(webdriver.By.css('#register_large')).then(function(el) {
+            return el.click();
+          }).then(function() {
+            return driver.findElement(webdriver.By.css('body')).then(function(el) {
+              return el.getText();
+            }).then(function(text) {
+              if (text.indexOf('Thank you for registering for Build and Grow!') > 0) {
+                console.log('well done!');
+              }
+            });
+          });
+        });
+      });
+    }
+  });
+}
+
 
 driver.manage().timeouts().implicitlyWait(1000);
 driver.get('http://lowesbuildandgrow.com/pages/default.aspx').then(function() {
-return driver.isElementPresent(webdriver.By.css('#sign-in'));
+  return driver.isElementPresent(webdriver.By.css('#sign-in'));
 }).then(function(present) {
   if (present) {
     return driver.findElement(webdriver.By.css('#sign-in')).click().then(function() {
@@ -27,15 +57,12 @@ return driver.isElementPresent(webdriver.By.css('#sign-in'));
       return driver.findElement(webdriver.By.css('#emailID')).sendKeys('jason.live@me.com');
     }).then(function() {
       return driver.findElement(webdriver.By.css('.password-clear2')).sendKeys('h3zdwp', webdriver.Key.ENTER);
-
     });
   }
-
-}).then(function(){
-    return driver.findElement(webdriver.By.css('.form-style2')).sendKeys('91748', webdriver.Key.ENTER);   
+}).then(function() {
+  takeIt('12205');
 });
 
-
-driver.sleep(1000 * 5);
-driver.quit();
-
+driver.sleep(1000 * 5).then(function() {
+  driver.quit();
+});
