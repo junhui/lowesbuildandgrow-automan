@@ -10,7 +10,11 @@ Change settings at file `setting.json` with your related information:
     "frequency": 2
 }
 ```
+- loginName: your account on the site
+- password: your password on the site
+- zipcode: the nearest zipcode
+- frequency: auto check deamon run interval minutes
 
-run 'node app'
+run `node app`
 
 it will automaticlly run a deamon to check and enroll the first avaiable seat.
